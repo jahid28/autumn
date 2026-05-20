@@ -16,7 +16,6 @@ import {
   Loader,
   // Lightformer,
   OrbitControls,
-  Plane,
   // RandomizedLight,
   // AccumulativeShadows,
   // MeshTransmissionMaterial,

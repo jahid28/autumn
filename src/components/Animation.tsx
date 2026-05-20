@@ -14,7 +14,7 @@ export function Animation({
 }: {
   containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
-  const { camera, viewport } = useThree();
+  const { camera } = useThree();
   //   const [y, setY] = useState(0);
   const targetLookAt = useRef({ x: 0, y: 5, z: 0 });
   const autumnText = useRef<THREE.Mesh>(null);
