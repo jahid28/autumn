@@ -50,7 +50,7 @@ type LeafData = {
 const dummy = new THREE.Object3D();
 
 export default function FallingLeaves({
-  count = 100,
+  count = 80,
 
   speed = 0.7,
   speedRandomness = 0.5,
