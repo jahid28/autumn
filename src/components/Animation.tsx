@@ -51,6 +51,10 @@ export function Animation({
   const { active } = useProgress();
 
   useEffect(() => {
+    ScrollTrigger.normalizeScroll(true);
+  }, []);
+
+  useEffect(() => {
     if (active) return;
     if (!leafModel.current) return;
     if (!containerRef.current) return;
@@ -75,7 +79,7 @@ export function Animation({
           // end: "+=4000", // scroll distance, 4000 means the animation will play until we've scrolled 4000px
           scrub: 1, // smooth scrubbing
           pin: true, // optional
-          // invalidateOnRefresh: true,
+          invalidateOnRefresh: true,
           anticipatePin: 1,
           // markers: true, // remove later
         },
