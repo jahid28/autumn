@@ -6,7 +6,7 @@ import { Leaf } from "./Leaf";
 import * as THREE from "three";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimeGirl } from "./AnimeGirl";
-import { Html, useProgress, Text } from "@react-three/drei";
+import {useProgress, Text } from "@react-three/drei";
 gsap.registerPlugin(ScrollTrigger);
 
 export function Animation({
@@ -16,7 +16,6 @@ export function Animation({
 }) {
   const { camera, viewport } = useThree();
   //   const [y, setY] = useState(0);
-  // const targetLookAt = useRef({ x: -0.85, y: 2.75, z: 1.1 });
   const targetLookAt = useRef({ x: 0, y: 5, z: 0 });
   const autumnText = useRef<THREE.Mesh>(null);
   const theText = useRef<THREE.Mesh>(null);
@@ -37,8 +36,9 @@ export function Animation({
 
   const cameraZoomInDuration = 6;
   const leafFallDuration = 10;
-  const camMoveBackDuration = 4;
-  const camFacesGirlDuration = 6;
+  // const camMoveBackDuration = 4;
+  // const camFacesGirlDuration = 6;
+  const camFacesHandDuration = 6;
   const dissolveDuration = 4;
 
   //   NOTES:
@@ -56,7 +56,7 @@ export function Animation({
     if (!containerRef.current) return;
 
     requestAnimationFrame(() => {
-      setupInitialState(camera, targetLookAt, leafModel, dissolveTarget);
+      setupInitialState(camera, targetLookAt, leafModel);
 
       tl.current = gsap.timeline({
         paused: true,
@@ -100,27 +100,29 @@ export function Animation({
         setDissolveY
       );
 
-      animateCameraMoveBack(tl.current, camera, camMoveBackDuration);
+      // animateCameraMoveBack(tl.current, camera, camMoveBackDuration);
 
-      animateCameraFaceGirl(
+      // animateCameraFaceGirl(
+      //   tl.current,
+      //   camera,
+      //   targetLookAt,
+      //   camFacesGirlDuration,
+      // );
+
+      animateCameraFaceHand(
         tl.current,
         camera,
         targetLookAt,
-        camFacesGirlDuration,
-        theText.current,
-        endText.current,
-        leafModel
+        camFacesHandDuration,
       );
+
       animateDissolve(
         tl.current,
-        // camera,
         dissolveDuration,
-        // targetLookAt,
-        // theText.current,
-        // endText.current,
-        // leafModel,
         dissolveTarget.current,
-        setDissolveY
+        setDissolveY,
+        theText.current,
+        endText.current,
       );
 
       // tl.current.play();
@@ -140,7 +142,7 @@ export function Animation({
         // position={[0, 4, 30]} //initial
         position={[-0.85, 2.75, 1.1]} //initial
         // position={[0.25, 1.172, 0.72]} //final
-        scale={0.5}
+        scale={0.75}
         // rotation={[Math.PI / 2, 0.1, 0.1]} //initial
         rotation={[Math.PI / 3, -Math.PI / 4, Math.PI / 4]} //final
         dissolveY={dissolveY}
@@ -165,10 +167,12 @@ export function Animation({
       <Text
         ref={autumnText}
         font="/fonts/FleurDeLeah-Regular.ttf"
-        position={[-0.5, 3, 4.1]}
-        // position={[-viewport.width*0.02,3, 5]}
-        fontSize={7}
-        // fontSize={viewport.width * 0.25}
+        position={[-0.5, 2.2, 4.1]}
+        // position={[-0.5, 3, 4.1]}
+        // position={[Math.min(-viewport.width*0.02, 1.2),3, 5]}
+        fontSize={3.7}
+        // fontSize={6}
+        // fontSize={Math.min(viewport.width * 0.25,6)}
         color="#ef581d"
         anchorX="center"
         anchorY="middle"
@@ -181,9 +185,9 @@ export function Animation({
       <Text
         ref={theText}
         font="/fonts/FleurDeLeah-Regular.ttf"
-        position={[-1, 1.3, 0]}
+        position={[-1.2, 1.3, 0]}
         // position={[-viewport.width*0.02,3, 5]}
-        fontSize={0.5}
+        fontSize={0.4}
         // fontSize={viewport.width * 0.25}
         color="#ef581d"
         anchorX="center"
@@ -192,15 +196,16 @@ export function Animation({
         // translateY={200}
         sdfGlyphSize={256}
         scale={[0, 0, 0]}
+        // fillOpacity={0}
       >
-        The
+        Beyond
       </Text>
       <Text
         ref={endText}
         font="/fonts/FleurDeLeah-Regular.ttf"
-        position={[0.8, 1.3, 0]}
-        // position={[-viewport.width*0.02,3, 5]}
-        fontSize={0.5}
+        position={[-1.2, 0.8, 0]}
+        // position={[0.8, 1.3, 0]}
+        fontSize={0.4}
         // fontSize={viewport.width * 0.25}
         color="#ef581d"
         anchorX="center"
@@ -209,8 +214,9 @@ export function Animation({
         // translateY={200}
         sdfGlyphSize={256}
         scale={[0, 0, 0]}
+        // fillOpacity={0}
       >
-        End
+         Autumn
       </Text>
     </>
   );
@@ -220,7 +226,7 @@ function setupInitialState(
   camera: THREE.Camera,
   targetLookAt: React.RefObject<{ x: number; y: number; z: number }>,
   leafModel: React.RefObject<THREE.Group | null>,
-  dissolveTarget: React.RefObject<{ y: number }>
+  // dissolveTarget: React.RefObject<{ y: number }>
 ) {
   gsap.set(targetLookAt.current, {
     x: 0,
@@ -234,7 +240,7 @@ function setupInitialState(
   gsap.set(camera.position, {
     x: 0,
     y: 4,
-    z: 30,
+    z: 18,
     //  x: 0,
     //   y: 1.4,
     //   z: 2,
@@ -250,13 +256,6 @@ function setupInitialState(
     y: 2.75,
     z: 1.1,
   });
-  // gsap.set(
-  //   //to immediately posituion the y clip near the leaf as it was at y=20
-  //   dissolveTarget,
-  //   {
-  //     y: 20,
-  //   },
-  // );
 
   //adding text:
   // const div = document.createElement("div");
@@ -279,7 +278,6 @@ function animateCameraZoomIn(
   camera: THREE.Camera,
   targetLookAt: React.RefObject<{ x: number; y: number; z: number }>,
   cameraZoomInDuration: number,
-  // setShowGirl: React.Dispatch<React.SetStateAction<boolean>>
   girlRef: React.RefObject<THREE.Group | null>
 ) {
   tl.addLabel("cameraZoomInAnimation");
@@ -293,7 +291,6 @@ function animateCameraZoomIn(
       duration: cameraZoomInDuration,
       ease: "power1.out",
       onComplete: () => {
-        // setShowGirl(true);
         girlRef.current!.scale.set(1, 1, 1);
       },
     },
@@ -324,7 +321,6 @@ function animateLeafFallAnimation(
 ) {
   tl.addLabel("leafFallAnimation");
 
-  // if (autumnText) {
   tl.to(
     autumnText!.position,
     {
@@ -343,9 +339,6 @@ function animateLeafFallAnimation(
       x: -0.2,
       y: 1.3,
       z: 0.7,
-      // x: -0.5,
-      // y: 1.4,
-      // z: 0.9,
       duration: leafFallDuration,
       ease: "power1.in",
     },
@@ -374,7 +367,6 @@ function animateLeafFallAnimation(
       ease: "power1.in",
     },
     "leafFallAnimation"
-    // `cameraZoomIn+=${cameraZoomInDuration}` //start a bit after the camera starts zooming in
   );
 
   tl.to(
@@ -387,7 +379,6 @@ function animateLeafFallAnimation(
       ease: "power1.in",
     },
     "leafFallAnimation"
-    // `cameraZoomIn+=${cameraZoomInDuration}` //start a bit after the camera starts zooming in
   );
   tl.to(
     dissolveTarget.current,
@@ -403,118 +394,128 @@ function animateLeafFallAnimation(
   );
 }
 
-function animateCameraMoveBack(
-  tl: GSAPTimeline,
-  camera: THREE.Camera,
-  camMoveBackDuration: number
-) {
-  tl.addLabel("cameraMoveBackAnimation");
+// function animateCameraMoveBack(
+//   tl: GSAPTimeline,
+//   camera: THREE.Camera,
+//   camMoveBackDuration: number
+// ) {
+//   tl.addLabel("cameraMoveBackAnimation");
 
-  tl.to(
-    camera.position,
-    {
-      x: -1.5,
-      y: 1.4,
-      z: 0,
-      duration: camMoveBackDuration,
-      ease: "power2.inOut",
-    },
-    "cameraMoveBackAnimation"
-  );
-}
+//   tl.to(
+//     camera.position,
+//     {
+//       x: -1.5,
+//       y: 1.4,
+//       z: 0,
+//       duration: camMoveBackDuration,
+//       ease: "power2.inOut",
+//     },
+//     "cameraMoveBackAnimation"
+//   );
+// }
 
-function animateCameraFaceGirl(
+// function animateCameraFaceGirl(
+//   tl: GSAPTimeline,
+//   camera: THREE.Camera,
+//   targetLookAt: React.RefObject<{ x: number; y: number; z: number }>,
+//   camFacesGirlDuration: number,
+// ) {
+//   tl.addLabel("cameraFaceGirlAnimation");
+
+//   tl.to(
+//     camera.position,
+//     {
+//       x: 0,
+//       y: 1.4,
+//       // z: 5,
+//       z: 2,
+//       duration: camFacesGirlDuration,
+//       ease: "power2.inOut",
+//     },
+//     "cameraFaceGirlAnimation"
+//   );
+
+//   tl.to(
+//     targetLookAt.current,
+//     {
+//       x: -0.2,
+//       y: 1.2,
+//       z: 0.2,
+//       duration: camFacesGirlDuration,
+//       ease: "power2.inOut",
+//     },
+//     "cameraFaceGirlAnimation"
+//   );
+// }
+
+function animateCameraFaceHand(
   tl: GSAPTimeline,
   camera: THREE.Camera,
   targetLookAt: React.RefObject<{ x: number; y: number; z: number }>,
-  camFacesGirlDuration: number,
-  theText: THREE.Mesh | null,
-  endText: THREE.Mesh | null,
-  leafModel: React.RefObject<THREE.Group | null>
-) {
-  tl.addLabel("cameraFaceGirlAnimation");
-
-  // if (theText && endText) {
-  // tl.addLabel("showTheEndTextAnimation");
-  tl.to(
-    theText!.scale,
-    {
-      x: 1,
-      y: 1,
-      z: 1,
-      duration: 1,
-      // ease: "power2.inOut",
-    },
-    "cameraFaceGirlAnimation+=4"
-  );
-  tl.to(
-    endText!.scale,
-    {
-      x: 1,
-      y: 1,
-      z: 1,
-      duration: 1,
-      // ease: "power2.inOut",
-    },
-    "cameraFaceGirlAnimation+=4"
-  );
-  // }
-
+  camFacesHandDuration: number,
+){
+  
+  tl.addLabel("cameraFaceHandAnimation");
   tl.to(
     camera.position,
     {
-      x: 0,
+      x: 0.4,
       y: 1.4,
-      // z: 5,
-      z: 2,
-      duration: camFacesGirlDuration,
-      ease: "power2.inOut",
+      z: 1.4,
+      duration: camFacesHandDuration,
+      // ease: "power2.inOut",
     },
-    "cameraFaceGirlAnimation"
+    "cameraFaceHandAnimation"
   );
-
   tl.to(
     targetLookAt.current,
     {
       x: -0.2,
       y: 1.2,
-      z: 0.2,
-      duration: camFacesGirlDuration,
-      ease: "power2.inOut",
+      z: 0.5,
+      duration: camFacesHandDuration,
+      // ease: "power2.inOut",
     },
-    "cameraFaceGirlAnimation"
+    "cameraFaceHandAnimation"
   );
+
 }
 
 function animateDissolve(
   tl: GSAPTimeline,
-  // camera: THREE.Camera,
-  // targetLookAt: React.RefObject<{ x: number; y: number; z: number }>,
   dissolveDuration: number,
-  // theText: THREE.Mesh | null,
-  // endText: THREE.Mesh | null,
-  // leafModel: React.RefObject<THREE.Group | null>,
   dissolveTarget: { y: number },
-  setDissolveY: React.Dispatch<React.SetStateAction<number>>
+  setDissolveY: React.Dispatch<React.SetStateAction<number>>,
+  theText: THREE.Mesh | null,
+  endText: THREE.Mesh | null,
 ) {
   tl.addLabel("dissolveAnimation");
 
-  // tl.to(
-  //   //to immediately posituion the y clip near the leaf as it was at y=20
-  //   dissolveTarget,
-  //   {
-  //     y: 1.2,
-  //     duration: 0.2,
-  //     ease: "power2.in",
-  //     onUpdate: () => {
-  //       console.log("update ", dissolveTarget.y);
-  //     },
-  //     onComplete: () => {
-  //       setDissolveY(dissolveTarget.y);
-  //     },
-  //   },
-  //   "dissolveAnimation"
-  // );
+  tl.to(
+    theText?.scale!,
+    {
+      x: 1,
+      y: 1,
+      z: 1,
+      // fillOpacity: 1,
+      duration: 1,
+      // ease: "power2.inOut",
+    },
+    "dissolveAnimation+=2"
+  );
+  tl.to(
+    endText?.scale!,
+    {
+      x: 1,
+      y: 1,
+      z: 1,
+      // fillOpacity: 1,
+      duration: 1,
+      // ease: "power2.inOut",
+    },
+    "dissolveAnimation+=2"
+  );
+
   tl.to(
     dissolveTarget,
     {

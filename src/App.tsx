@@ -16,6 +16,7 @@ import {
   Loader,
   // Lightformer,
   OrbitControls,
+  Plane,
   // RandomizedLight,
   // AccumulativeShadows,
   // MeshTransmissionMaterial,
@@ -27,11 +28,12 @@ import FallingLeaves from "./components/FallingLeaves";
 import { Tree } from "./components/Tree";
 import { Animation } from "./components/Animation";
 import { CameraRig } from "./components/CameraRig";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useRef } from "react";
 // import { setupInitialState } from "./animations/setupInitialState";
 // import { animateCameraZoomIn } from "./animations/animateCameraZoomIn";
 // import { useRef } from "react";
 import { UI } from "./components/UI";
+import Ground from "./components/Ground";
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -66,7 +68,7 @@ function App() {
   }}
           camera={{
             // position: [-0.85, 2.75, 1.1+0.5],
-            position: [0, 4, 30],
+            position: [0, 4, 18],
             fov: 45,
           }}
           onCreated={({ gl }) => {
@@ -106,6 +108,8 @@ function App() {
             <FallingLeaves glbPath="/autumn_leaf.glb" />
 
             <Animation containerRef={containerRef} />
+
+            <Ground/>
 
             {/* <Plane args={[10, 10]} rotation={[-Math.PI / 2, 0, 0]} position={[0, 9, 0]}/> */}
           </Suspense>

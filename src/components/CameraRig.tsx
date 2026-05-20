@@ -8,7 +8,7 @@ export function CameraRig() {
   const rig = useRef<THREE.Group>(null);
 
   const parameters = useRef({
-    X_AXIS_ROTATION_AMOUNT: 0.08,
+    X_AXIS_ROTATION_AMOUNT: 0.05,
     Y_AXIS_ROTATION_AMOUNT: 0.05,
     X_AXIS_DAMPING_FACTOR: 0.05,
     Y_AXIS_DAMPING_FACTOR: 0.05,

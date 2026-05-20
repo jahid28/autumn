@@ -1,28 +1,29 @@
-
 // import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import { useGLTF } from "@react-three/drei";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 
-export function Leaf({ dissolveY, ...props }:any) {
-  const { nodes }:{
-    nodes: any
-  } = useGLTF('/autumn_leaf.glb')
+export function Leaf({ dissolveY, ...props }: any) {
+  const {
+    nodes,
+    materials,
+  }: {
+    nodes: any;
+    materials: any;
+  } = useGLTF("/new_autumn_leaf1.glb");
 
-  console.log("dissolveY ",dissolveY)
-
-   const meshRef = useRef<THREE.Mesh>(null);
-  const particlesRef = useRef<THREE.Points>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
+  // const particlesRef = useRef<THREE.Points>(null);
 
   /**
    * PARAMETERS
    */
   const parameters = {
-
-    PARTICLES_COLOR: "#ffffff",
-    PARTICLES_SIZE: 0.01,
-    PARTICLES_SPEED: 0.35,
+    PARTICLES_COLOR: "#d2712c",
+    // PARTICLES_COLOR: "#ce7e45",
+    PARTICLES_SIZE: 0.0025,
+    PARTICLES_SPEED: 0.1,
     PARTICLES_HEIGHT: 0.1,
   };
 
@@ -30,17 +31,29 @@ export function Leaf({ dissolveY, ...props }:any) {
    * CLIPPING PLANE
    */
   const clippingPlane = useMemo(() => {
-    return new THREE.Plane(
-      new THREE.Vector3(0, -1, 0),
-      dissolveY
-    );
+    return new THREE.Plane(new THREE.Vector3(0, -1, 0), dissolveY);
   }, []);
+
+  const material = materials["Scene_-_Root"] as any;
+    
+
+    material.clippingPlanes = [clippingPlane];
+    material.clipShadows = true;
+    material.side = THREE.DoubleSide;
+material.needsUpdate = true;
 
   /**
    * PARTICLE GEOMETRY
    */
   const particlesGeometry = useMemo(() => {
-    const geometry = nodes.Object_12.geometry.clone();
+    const geometry = nodes.Object_2.geometry.clone();
+    geometry.scale(0.0003,0.0003,0.0003);
+    geometry.rotateX(Math.PI/2);
+    geometry.rotateY(Math.PI);
+    // geometry.rotateZ(Math.PI/2);
+
+    // console.log("geometry ",geometry)
+    // const geometry = nodes.Object_12.geometry.clone();
 
     const positionAttr = geometry.attributes.position;
 
@@ -75,21 +88,13 @@ export function Leaf({ dissolveY, ...props }:any) {
       uniforms: {
         uTime: new THREE.Uniform(0),
 
-        uParticleSpeed: new THREE.Uniform(
-          parameters.PARTICLES_SPEED
-        ),
+        uParticleSpeed: new THREE.Uniform(parameters.PARTICLES_SPEED),
 
-        uParticleHeight: new THREE.Uniform(
-          parameters.PARTICLES_HEIGHT
-        ),
+        uParticleHeight: new THREE.Uniform(parameters.PARTICLES_HEIGHT),
 
-        uClipY: new THREE.Uniform(
-          dissolveY
-        ),
+        uClipY: new THREE.Uniform(dissolveY),
 
-        uColor: new THREE.Uniform(
-          new THREE.Color(parameters.PARTICLES_COLOR)
-        ),
+        uColor: new THREE.Uniform(new THREE.Color(parameters.PARTICLES_COLOR)),
 
         uResolution: new THREE.Uniform(
           new THREE.Vector2(
@@ -181,15 +186,13 @@ export function Leaf({ dissolveY, ...props }:any) {
     });
   }, []);
 
-
   /**
    * UPDATE CLIP VALUE
    */
   useEffect(() => {
     clippingPlane.constant = dissolveY;
 
-    particleMaterial.uniforms.uClipY.value =
-      dissolveY;
+    particleMaterial.uniforms.uClipY.value = dissolveY;
   }, [dissolveY]);
 
   /**
@@ -198,6 +201,8 @@ export function Leaf({ dissolveY, ...props }:any) {
   useEffect(() => {
     if (!meshRef.current) return;
 
+    // const material = materials["Scene_-_Root"] as any;
+    
     const material = meshRef.current.material as THREE.MeshStandardMaterial;
 
     material.clippingPlanes = [clippingPlane];
@@ -225,34 +230,34 @@ export function Leaf({ dissolveY, ...props }:any) {
 
   return (
     <group {...props} dispose={null}>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Object_12.geometry}
-        // material={new THREE.MeshStandardMaterial({ color: '#cf6519',side: THREE.DoubleSide })}
-        // material={materials.leaf}
-        rotation={[-0.11, -0.414, -1.015]}
-      >
-        <meshStandardMaterial
+      <group rotation={[-Math.PI / 2, 0, 0]} scale={0.0003}>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Object_2.geometry}
+          material={materials["Scene_-_Root"]}
+          // geometry={nodes.Object_12.geometry}
+          rotation={[Math.PI, 0, Math.PI]}
+          // rotation={[-0.11, -0.414, -1.015]}
+        >
+          {/* <meshStandardMaterial
           color={"#cf6519"}
           side={THREE.DoubleSide}
           clippingPlanes={[clippingPlane]}
-        />
+          /> */}
         </mesh>
+      </group>
 
-         {/* PARTICLES */}
+      {/* PARTICLES */}
       <points
-        ref={particlesRef}
+        // ref={particlesRef}
         geometry={particlesGeometry}
-        rotation={[-0.11, -0.414, -1.015]}
+        // rotation={[-0.11, -0.414, -1.015]}
       >
-        <primitive
-          object={particleMaterial}
-          attach="material"
-        />
+        <primitive object={particleMaterial} attach="material" />
       </points>
     </group>
-  )
+  );
 }
 
-useGLTF.preload('/autumn_leaf.glb')
+useGLTF.preload("/new_autumn_leaf1.glb");
