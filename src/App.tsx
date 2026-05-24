@@ -56,15 +56,14 @@ function App() {
         {/* <div className="sticky top-0 h-screen"> */}
 
         <Canvas
-          id="lol"
           // gl={(props) => {
           //   extend(THREE)
           //   const renderer = new THREE.WebGPURenderer(props:any)
           //   return renderer.init().then(() => renderer)
           // }}
-           gl={{
-    localClippingEnabled: true,
-  }}
+          gl={{
+            localClippingEnabled: true,
+          }}
           camera={{
             // position: [-0.85, 2.75, 1.1+0.5],
             position: [0, 4, 18],
@@ -73,7 +72,6 @@ function App() {
           onCreated={({ gl }) => {
             gl.setClearColor("#fcb28d");
           }}
-          
         >
           <Suspense fallback={null}>
             {/* <axesHelper args={[5]} /> */}
@@ -108,7 +106,7 @@ function App() {
 
             <Animation containerRef={containerRef} />
 
-            <Ground/>
+            <Ground />
 
             {/* <Plane args={[10, 10]} rotation={[-Math.PI / 2, 0, 0]} position={[0, 9, 0]}/> */}
           </Suspense>
