@@ -202,7 +202,7 @@ export function Animation({
         scale={[0, 0, 0]}
         // fillOpacity={0}
       >
-        Beyond
+        Thank
       </Text>
       <Text
         ref={endText}
@@ -220,7 +220,7 @@ export function Animation({
         scale={[0, 0, 0]}
         // fillOpacity={0}
       >
-         Autumn
+         You
       </Text>
     </>
   );
