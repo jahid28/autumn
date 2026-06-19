@@ -104,7 +104,7 @@ export function UI() {
           Anime Girl
         </a>
 
-        <a href="https://x.com/28_Jahid" target="_blank">
+        <a href="https://x.com/TechyWebDev" target="_blank">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="#ef581d"
